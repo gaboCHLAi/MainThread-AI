@@ -6,12 +6,12 @@
     "@google/genai": "^1.39.0",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.13.4",
-    "chrome-launcher": "^1.2.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "lighthouse": "^13.0.1",
-    "openai": "^6.17.0"
+    "openai": "^6.17.0",
+    "puppeteer": "^24.36.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
