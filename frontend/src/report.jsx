@@ -9,15 +9,22 @@ export default function Report() {
   const handleAnalyze = async () => {
     setLoading(true);
     setReport(null);
+
+    // 1. ვიღებთ ბექენდის მისამართს .env ფაილიდან.
+    // თუ იქ ვერ იპოვა (მაგ. ლოკალურად), გამოიყენებს localhost-ს.
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
     try {
       const response = await axios.post(
-        "http://localhost:5000/analyze",
+        `${API_URL}/analyze`, // დინამიური ლინკი
         { url },
-        { timeout: 90000 },
+        { timeout: 120000 }, // Lighthouse-ს ხშირად 90 წამზე მეტი სჭირდება, 120 ჯობია
       );
-      setReport(response.data); // ვიღებთ მთლიან finalReport-ს
+
+      setReport(response.data);
     } catch (err) {
-      alert("შეცდომა ანალიზისას");
+      console.error("Error details:", err);
+      alert(err.response?.data?.error || "შეცდომა ანალიზისას");
     } finally {
       setLoading(false);
     }

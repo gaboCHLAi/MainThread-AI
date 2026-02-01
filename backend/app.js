@@ -1,15 +1,17 @@
 import express from "express";
 import cors from "cors";
+import "dotenv/config"; // აი ეს დავამატეთ, რომ .env წაიკითხოს
 import getAiAdvice from "./getAiAdvice.js";
 import { runAudit } from "./analyzer.js";
+
 const app = express();
+
+// CORS-ის კონფიგურაცია (რომ ფრონტენდმა შეძლოს მოწერა)
 app.use(cors());
 app.use(express.json());
 
-// შევცვალოთ GET -> POST-ით
 app.post("/analyze", async (req, res) => {
   try {
-    // 1. ვიღებთ URL-ს, რომელიც React-დან მოვიდა
     const { url } = req.body;
     console.log(`🔎 ანალიზი დაიწყო საიტისთვის: ${url}`);
 
@@ -18,7 +20,6 @@ app.post("/analyze", async (req, res) => {
     }
 
     const report = await runAudit(url);
-    // 4. ვაბრუნებთ პასუხს
     res.json(report);
   } catch (error) {
     console.error("❌ შეცდომა ბექენდზე:", error);
@@ -26,4 +27,9 @@ app.post("/analyze", async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+// !!! აი აქ არის მთავარი ცვლილება !!!
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
