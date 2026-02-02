@@ -19,7 +19,6 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build": "npm install",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "build": "npm install"
   }
 }

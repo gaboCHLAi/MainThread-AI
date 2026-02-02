@@ -5,16 +5,23 @@ import getAiAdvice from "./getAiAdvice.js"; // თუ შენ გაქვს 
 export async function runAudit(url) {
   const { default: lighthouse } = await import("lighthouse");
 
+  const isRender =
+    process.env.RENDER === "true" || process.env.PUPPETEER_EXECUTABLE_PATH;
+
   const browser = await puppeteer.launch({
-    headless: "new",
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--no-zygote",
-      "--single-process",
-    ],
+    // თუ Render-ზეა, გამოიყენებს მითითებულ გზას, თუ არა - ავტომატურად იპოვის
+    executablePath: isRender
+      ? process.env.PUPPETEER_EXECUTABLE_PATH
+      : undefined,
+    args: isRender
+      ? [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--single-process",
+        ]
+      : [], // ლოკალურად ზედმეტი არგუმენტები არ გვინდა
+    headless: isRender ? "shell" : "new",
   });
 
   const options = {
