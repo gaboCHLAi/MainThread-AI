@@ -1,6 +1,7 @@
 import "dotenv/config";
 import puppeteer from "puppeteer";
 import getAiAdvice from "./getAiAdvice.js"; // თუ შენ გაქვს ეს ფაილი
+import { resolveExecutablePath } from "puppeteer";
 
 export async function runAudit(url) {
   const { default: lighthouse } = await import("lighthouse");
@@ -9,7 +10,12 @@ export async function runAudit(url) {
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: "true",
   });
-
+  (async () => {
+    const chromePath = await resolveExecutablePath({
+      product: "chrome",
+    });
+    console.log("Chrome installed at:", chromePath);
+  })();
   const options = {
     logLevel: "silent",
     output: "json",
