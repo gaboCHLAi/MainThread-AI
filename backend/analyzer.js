@@ -6,11 +6,9 @@ export async function runAudit(url) {
   const { default: lighthouse } = await import("lighthouse");
 
   const browser = await puppeteer.launch({
+    executablePath: process.env.CHROMIUM_PATH,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    headless: "true",
   });
-  console.log("nika");
-  console.log("nika2");
 
   const options = {
     logLevel: "silent",
