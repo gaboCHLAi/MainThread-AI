@@ -6,11 +6,9 @@ export async function runAudit(url) {
   const { default: lighthouse } = await import("lighthouse");
 
   const browser = await puppeteer.launch({
-    executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: "new",
   });
-
   const options = {
     logLevel: "silent",
     output: "json",

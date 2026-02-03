@@ -6,7 +6,8 @@ export default function Report() {
   const [report, setReport] = useState(null); // აქ შევინახავთ ყველაფერს
   const [loading, setLoading] = useState(false);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setReport(null);
 
@@ -36,7 +37,7 @@ export default function Report() {
         {/* Left Panel */}
         <div className="md:w-1/2 flex flex-col justify-start bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
           {/* Header */}
-          <div className="mb-8 border-l-4 border-stone-500 pl-4">
+          <div className="mb-8 border-l-4 border-stone-500 pl-4 bg-red-500/10 ">
             <h1 className="text-3xl font-black tracking-tight text-white">
               MAIN_THREAD
             </h1>
@@ -47,20 +48,21 @@ export default function Report() {
 
           {/* Input Group */}
           <div className="flex flex-col gap-4">
-            <input
-              className="w-full p-4 bg-[#262626] border border-stone-800 rounded-xl text-white outline-none focus:border-stone-500 transition-all placeholder:text-stone-500 shadow-inner"
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://target-site.com"
-            />
-            <button
-              onClick={handleAnalyze}
-              disabled={loading}
-              className="w-full py-4 bg-stone-200 hover:bg-white text-black rounded-xl font-bold text-lg transition-transform active:scale-95 disabled:bg-stone-700 disabled:text-stone-500"
-            >
-              {loading ? "RUNNING_ANALYSIS..." : "START_DIAGNOSTICS"}
-            </button>
+            <form onSubmit={handleAnalyze}>
+              <input
+                className="w-full p-4 bg-[#262626] border border-stone-800 rounded-xl text-white outline-none focus:border-stone-500 transition-all placeholder:text-stone-500 shadow-inner"
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://target-site.com"
+              />
+              <button
+                disabled={loading}
+                className="w-full py-4 bg-stone-200 hover:bg-white text-black rounded-xl font-bold text-lg transition-transform active:scale-95 disabled:bg-stone-700 disabled:text-stone-500 cursor-pointer "
+              >
+                {loading ? "RUNNING_ANALYSIS..." : "START_DIAGNOSTICS"}
+              </button>
+            </form>
           </div>
         </div>
 
