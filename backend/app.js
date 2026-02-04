@@ -1,35 +1,19 @@
-import express from "express";
-import cors from "cors";
-import "dotenv/config"; // აი ეს დავამატეთ, რომ .env წაიკითხოს
-import getAiAdvice from "./getAiAdvice.js";
-import { runAudit } from "./analyzer.js";
+import "dotenv/config";
+import { runFullFlow } from "./Flows/mainFlow.js";
+import { keywords } from "./keywords.js";
 
-const app = express();
+const MY_EMAIL = process.env.EMAIL_USER;
 
-// CORS-ის კონფიგურაცია (რომ ფრონტენდმა შეძლოს მოწერა)
-app.use(cors());
-app.use(express.json());
+(async () => {
+  console.log("🚀 Starting full Puppeteer flow...");
 
-app.post("/analyze", async (req, res) => {
   try {
-    const { url } = req.body;
-    console.log(`🔎 ანალიზი დაიწყო საიტისთვის: ${url}`);
-
-    if (!url) {
-      return res.status(400).json({ error: "URL აუცილებელია" });
+    for (const keyword of keywords) {
+      console.log(`🔎 Searching for keyword: ${keyword}`);
+      await runFullFlow(keyword, MY_EMAIL); // აქ ყოველ keyword-ზე დაიძება flow
     }
-
-    const report = await runAudit(url);
-    res.json(report);
+    console.log("✅ All flows finished successfully");
   } catch (error) {
-    console.error("❌ შეცდომა ბექენდზე:", error);
-    res.status(500).json({ error: "ანალიზი ვერ მოხერხდა" });
+    console.error("❌ Error during flow:", error);
   }
-});
-
-// !!! აი აქ არის მთავარი ცვლილება !!!
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+})();

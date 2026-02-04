@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
-# exit on error
-set -o errexit
+# #!/usr/bin/env bash
+# # exit on error
+# set -o errexit
 
-npm install
+# npm install
 
-# Manually trigger the chrome install into the project's local .cache folder
-npx puppeteer browsers install chrome
+# # Manually trigger the chrome install into the project's local .cache folder
+# npx puppeteer browsers install chrome
