@@ -4,8 +4,9 @@ import lighthouse from "lighthouse";
 
 export async function auditSite(page, url) {
   console.log(`🔎 ანალიზი დაიწყო საიტისთვის: ${url}...`);
-
+  const { port } = new URL(page.browser().wsEndpoint());
   const options = {
+    port,
     logLevel: "silent",
     output: "json",
     onlyCategories: ["performance", "accessibility", "best-practices", "seo"],

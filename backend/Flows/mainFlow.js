@@ -10,7 +10,7 @@ export async function runFullFlow(keyword, recipientEmail) {
   const page = await browser.newPage();
 
   try {
-    // 1️⃣ Google search → links
+    // 1️⃣ DuckDuckGo search → links
     const links = await searchLinks(page, keyword);
 
     if (links.length === 0) {
@@ -27,7 +27,6 @@ export async function runFullFlow(keyword, recipientEmail) {
       const audit = await auditSite(page, url);
       const emails = await searchEmails(page);
 
-      // 3️⃣ ფილტრი — მხოლოდ პრობლემური საიტები
       if (audit.red.length > 0 || audit.scores.performance < 90) {
         const emailHtml = `
           <h2>Audit Report</h2>

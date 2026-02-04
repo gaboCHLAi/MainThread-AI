@@ -1,2 +1,2 @@
 // src/keywords.js
-export const keywords = ["dictionary ge"];
+export const keywords = ["wev devlopment"];

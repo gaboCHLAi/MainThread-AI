@@ -1,42 +1,37 @@
 // src/Controllers/searchLinks.js
-export async function searchLinks(page, keyword, maxResults = 10) {
+export async function searchLinks(page, keyword, maxResults = 1) {
+  const links = [];
+
   try {
-    console.log(`🔎 Searching in Google: ${keyword}`);
+    const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(
+      keyword,
+    )}&ia=web`;
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-    );
+    console.log("🔍 DuckDuckGo search:", keyword);
 
-    await page.goto(
-      `https://www.google.com/search?q=${encodeURIComponent(keyword)}`,
-      {
-        waitUntil: "domcontentloaded",
-        timeout: 60000,
-      },
-    );
+    await page.goto(searchUrl, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
 
-    // პატარა delay — Google ნაკლებად გბლოკავს
+    // პატარა human delay
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const links = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll("a"))
+    const results = await page.evaluate(() => {
+      return Array.from(
+        document.querySelectorAll("a[data-testid='result-title-a']"),
+      )
         .map((a) => a.href)
         .filter(
           (href) =>
-            href &&
-            href.startsWith("http") &&
-            !href.includes("google.") &&
-            !href.includes("/search?"),
+            href && href.startsWith("http") && !href.includes("duckduckgo.com"),
         );
     });
 
-    const uniqueLinks = [...new Set(links)].slice(0, maxResults);
-
-    console.log(`🔗 Found ${uniqueLinks.length} links`);
-
-    return uniqueLinks;
-  } catch (error) {
-    console.error("❌ Error in searchLinks:", error.message);
-    return [];
+    links.push(...results.slice(0, maxResults));
+  } catch (err) {
+    console.log("❌ DuckDuckGo error:", err.message);
   }
+
+  return [...new Set(links)];
 }

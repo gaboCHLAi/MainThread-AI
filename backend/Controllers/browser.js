@@ -1,5 +1,7 @@
-// src/Controllers/browser.js
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+
+puppeteer.use(StealthPlugin());
 
 let browserInstance = null;
 
@@ -13,6 +15,7 @@ export async function getBrowser() {
   }
   return browserInstance;
 }
+
 export async function closeBrowser() {
   if (browserInstance) {
     await browserInstance.close();
