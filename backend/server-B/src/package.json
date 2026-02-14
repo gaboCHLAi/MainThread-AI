@@ -1,0 +1,13 @@
+{
+  "name": "server-b",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/aiModel.js",
+  "scripts": {
+    "start": "node src/aiModel.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "@google/generative-ai": "^0.24.1"
+  }
+}
