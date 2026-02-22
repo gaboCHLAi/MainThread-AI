@@ -1,77 +1,111 @@
-# MainThread
+MainThread Project
+🚀 Project Overview
 
-Full-stack application with a React (Vite) frontend and two Node.js backend services, orchestrated with Docker Compose.
+MainThread is a full-stack web application designed to analyze websites, generate AI advice, and perform Lighthouse audits for both desktop and mobile platforms. The project is built using React (Vite) for the frontend, Node.js / Express for the backend, and Puppeteer for web scraping and automated audits.
 
-## Architecture
+🛠 Technologies
 
-| Service            | Description        | Port (host) |
-|--------------------|--------------------|-------------|
-| **frontend-service** | React + Vite app   | 3000        |
-| **server-a-service** | Backend API (server-A) | 5000     |
-| **server-b-service** | Backend API (server-B / scraping) | 5001 |
+Frontend: React, Vite, Tailwind CSS (optional)
 
-## Prerequisites
+Backend: Node.js, Express
 
-- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- **Windows:** Docker Desktop must be **running** before you run `docker compose`. If you see an error like `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`, start Docker Desktop and wait until it is fully ready, then try again.
-- For local (non-Docker) development: Node.js 20+
+Automation & Scraping: Puppeteer, Lighthouse
 
-## Quick Start with Docker
+Database: MongoDB (if needed)
 
-1. **Create environment files** (required for the backend services):
-   - `backend/server-A/.env` — copy from `backend/server-A/.env.example` if available and set your variables.
-   - `backend/server-B/.env` — copy from `backend/server-B/.env.example` if available and set your variables (e.g. `PORT=5001`, API keys).
+Containerization: Docker, Docker Compose
 
-2. **Build and run all services:**
+📦 Installation
+Using Docker (Recommended)
 
-   ```bash
-   docker compose up --build
-   ```
+Build and run all services:
 
-3. **Open in browser:**
-   - Frontend: http://localhost:3000  
-   - Server A API: http://localhost:5000  
-   - Server B API: http://localhost:5001  
+docker compose up --build
 
-## Run in background
+Access services:
 
-```bash
-docker compose up --build -d
-```
+Frontend: http://localhost:3000
 
-Stop:
+Server B (Scraping API): http://localhost:5001
 
-```bash
-docker compose down
-```
+Server A: http://localhost:5000
 
-## Local development (without Docker)
+View logs:
 
-- **Frontend:** `cd frontend && npm install && npm run dev`
-- **Server A:** `cd backend/server-A && npm install && npm run dev`
-- **Server B:** `cd backend/server-B && npm install && npm run dev`
+docker compose logs -f frontend-service
+docker compose logs -f server-a-service
+docker compose logs -f server-b-service
 
-Set `PORT` and other variables in each service’s `.env` as needed.
+Local Development (Without Docker)
 
-## Project structure
+Clone the repo (optional if not using Docker):
 
-```
-MainThread/
-├── docker-compose.yml      # Orchestrates frontend + server-A + server-B
-├── frontend/               # React + Vite + Tailwind
-│   ├── Dockerfile
-│   └── .dockerignore
-├── backend/
-│   ├── server-A/           # Express API (port 5000)
-│   │   ├── Dockerfile
-│   │   └── .dockerignore
-│   └── server-B/           # Scraping/API service (port 5001)
-│       ├── Dockerfile
-│       └── .dockerignore
-└── README.md
-```
+git clone <your-repo-url>
+cd mainthread-project
 
-## Notes
+Install dependencies for backend & frontend:
 
-- Backend services use `env_file` pointing to `./backend/server-A/.env` and `./backend/server-B/.env`. Ensure these files exist (or adjust `docker-compose.yml`) before running.
-- Server B is protected by an API key; send it in the `x-api-key` header when calling its API.
+# Backend
+
+cd server-a
+npm install
+cd ../server-b
+npm install
+
+# Frontend
+
+cd ../frontend
+npm install
+
+Run servers locally:
+
+# Server A
+
+npm start
+
+# Server B
+
+npm start
+
+# Frontend
+
+npm run dev
+🔧 Backend (Server B) - Puppeteer & Lighthouse
+
+Server B launches headless Chrome to scrape websites and run Lighthouse audits.
+
+Audits run in dual-mode (Mobile + Desktop).
+
+Cache path for Puppeteer: /home/pptruser/.cache/puppeteer
+
+If Chrome is missing:
+
+npx puppeteer install chrome
+
+Example API log snippet:
+
+🚀 Browser launched
+🔍 Navigating to: https://example.ge/
+Lighthouse audit finished
+🔒 Security audit finished
+🤖 AI advice generated
+🛑 Browser closed safely
+🖥 Frontend (React + Vite)
+
+Dev server runs on http://localhost:3000
+
+📝 API Endpoints
+
+Server A: Handles user requests, returns AI analysis results
+
+Server B: Scraping API, runs Lighthouse audits, generates AI advice
+
+⚙️ Troubleshooting
+
+Chrome not found: Install Chrome with Puppeteer:
+
+npx puppeteer install chrome
+
+Port conflicts: Check ports 3000 (frontend), 5000 (server A), 5001 (server B)
+
+Environment variables: .env files are required for API keys, scraping config, etc. Do not commit .env to git.
