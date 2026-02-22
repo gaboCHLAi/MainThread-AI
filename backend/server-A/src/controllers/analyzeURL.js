@@ -5,7 +5,7 @@ export const analyzeURL = async (req, res) => {
     const { url } = req.body;
 
     const response = await axios.post(
-      "http://localhost:4000/api/analyze", // 👈 SERVER B IP
+      "http://server-b-service:5001/api/analyze", // 👈 SERVER B IP
       { url },
       {
         headers: {

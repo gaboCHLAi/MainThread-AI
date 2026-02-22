@@ -1,0 +1,58 @@
+# =============================================================================
+# MainThread - Docker Compose
+# =============================================================================
+#
+# REQUIREMENT: Docker Desktop must be running on Windows.
+# If you see "The system cannot find the file specified" for
+# dockerDesktopLinuxEngine pipe, start Docker Desktop and wait until it is ready.
+#
+# Run all services:  docker compose up --build
+# Run in background: docker compose up --build -d
+# Stop:              docker compose down
+#
+# Ensure these env files exist (copy from .env.example if needed):
+#   - backend/server-A/.env
+#   - backend/server-B/.env
+#
+# =============================================================================
+
+services:
+  # React + Vite frontend (port 3000)
+  frontend-service:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      # Required for file watching inside Docker on Windows
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+
+  # Backend API - Server A (port 5000)
+  server-a-service:
+    build:
+      context: ./backend/server-A
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+    env_file:
+      - ./backend/server-A/.env
+
+  # Backend API - Server B / Scraping (port 5001)
+  server-b-service:
+    build:
+      context: ./backend/server-B
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+    env_file:
+      - ./backend/server-B/.env

@@ -14,7 +14,7 @@ export async function flowForUserRequest(req, res) {
 
     browser = await getBrowser();
 
-    // 🔹 ძირითადი გვერდი პლატფორმის და უსაფრთხოების დასადგენად
+    // Open main page for platform and security detection
     mainPage = await browser.newPage();
     console.log(`🔍 Navigating to: ${url}`);
     await mainPage.goto(url, {
@@ -22,7 +22,7 @@ export async function flowForUserRequest(req, res) {
       timeout: 120000,
     });
 
-    // 🔹 Lighthouse აუდიტი (Mobile & Desktop)
+    // Lighthouse audit (Mobile and Desktop)
     let auditResults = {
       success: false,
       mobileScores: null,
@@ -52,7 +52,7 @@ export async function flowForUserRequest(req, res) {
       console.error("⚠️ Security audit failed");
     }
 
-    // 🔹 AI-სთვის მონაცემების მომზადება (ახალი სტრუქტურით)
+    // Prepare data for AI (structured format)
     const sitesResults = [
       {
         url,
@@ -68,7 +68,7 @@ export async function flowForUserRequest(req, res) {
       },
     ];
 
-    // 🔹 AI Advice
+    // AI advice
     let aiAdvice = null;
     try {
       aiAdvice = await getAiAdvice(sitesResults);
@@ -77,11 +77,10 @@ export async function flowForUserRequest(req, res) {
       console.error("⚠️ AI analysis failed:", aiError.message);
     }
 
-    // 🔹 საბოლოო პასუხი ფრონტენდს
+    // Final response to frontend (spread auditResults into result)
     res.json({
       status: "ok",
       aiAdvice,
-      // აქ ვშლით (spread) auditResults-ს, რომ პირდაპირ ველებად გამოჩნდეს
       result: {
         ...auditResults,
         platform,

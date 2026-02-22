@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 const EMAIL = process.env.EMAIL_USER;
 
-// 🔐 API KEY დაცვა (აუცილებელია)
+// API key required for all requests
 app.use((req, res, next) => {
   const apiKey = req.headers["x-api-key"];
   if (apiKey !== process.env.API_KEY) {
@@ -19,17 +19,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// 📩 API endpoint
+// API routes
 app.use("/api", lookupRoutes);
 
-app.listen(4000, "0.0.0.0", () => {
-  console.log("🚀 Scraping API running on port 4000");
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Scraping API running on port ${PORT}`);
 });
 
-// 🔥 background scraping (პარალელურად!)
+// Optional: background scraping (runs in parallel)
 // (async () => {
-//   console.log("🕷️ Background scraping started");
-
+//   console.log("Background scraping started");
 //   for (const keyword of keywords) {
 //     await runFullFlow(keyword, EMAIL);
 //   }

@@ -3,14 +3,14 @@ import puppeteer from "puppeteer";
 import { Worker, isMainThread, parentPort, workerData } from "worker_threads";
 import { fileURLToPath } from "url";
 
-// საჭიროა ფაილის გზის დასადგენად, რომ Worker-მა საკუთარი თავი გამოიძახოს
+// Resolve file path so the Worker can load this same file
 const __filename = fileURLToPath(import.meta.url);
 
 /**
- * Lighthouse გაშვება კონკრეტულ რეჟიმში
+ * Run Lighthouse audit in the given mode (mobile or desktop)
  */
 async function runAudit(url, mode) {
-  // თუ მთავარ ნაკადში ვართ, ვქმნით Worker-ს
+  // If we are on the main thread, run the audit in a Worker
   if (isMainThread) {
     return new Promise((resolve, reject) => {
       const worker = new Worker(__filename, {
@@ -30,7 +30,7 @@ async function runAudit(url, mode) {
     });
   }
 
-  // --- ქვედა ნაწილი სრულდება მხოლოდ Worker-ის შიგნით ---
+  // Code below runs only inside the Worker
   let browser;
   try {
     browser = await puppeteer.launch({
@@ -115,10 +115,10 @@ async function runAudit(url, mode) {
  * Full parallel audit (Mobile + Desktop)
  */
 export async function auditSite(url) {
-  console.log(`🔎 Lighthouse აუდიტი დაიწყო: ${url}`);
+  console.log(`Lighthouse audit started: ${url}`);
 
   try {
-    // ⚡ ახლა ეს ორი ფუნქცია გაეშვება ორ სხვადასხვა Worker ნაკადში
+    // Run mobile and desktop audits in parallel (each in its own Worker)
     const [mobileResults, desktopResults] = await Promise.all([
       runAudit(url, "mobile"),
       runAudit(url, "desktop"),
@@ -129,7 +129,7 @@ export async function auditSite(url) {
       ...desktopResults.audits.filter((a) => a.score < 0.5),
     ];
 
-    console.log("✅ Lighthouse აუდიტი დასრულდა (პარალელურ რეჟიმში)");
+    console.log("Lighthouse audit finished (parallel mode)");
 
     return {
       success: true,
@@ -148,7 +148,7 @@ export async function auditSite(url) {
   }
 }
 
-// 🧠 Worker-ის შიდა ლოგიკა შედეგის დასაბრუნებლად
+// Worker entry: run audit and send result back to main thread
 if (!isMainThread) {
   runAudit(workerData.url, workerData.mode)
     .then((result) => parentPort.postMessage({ success: true, result }))
